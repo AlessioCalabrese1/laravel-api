@@ -18,7 +18,9 @@ class PostController extends Controller
         $posts = Post::all();
 
         return response()->json([
-            'posts' => $posts,
+            'response' => true,
+            'count' => count($posts),
+            'results' => $posts,
         ]);
     }
 
