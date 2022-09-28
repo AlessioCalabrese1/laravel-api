@@ -1914,16 +1914,20 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
-      posts: []
+      posts: [],
+      currentPage: 1,
+      lastPage: null,
+      loading: false
     };
   },
   methods: {
     getPosts: function getPosts() {
       var _this = this;
 
-      axios__WEBPACK_IMPORTED_MODULE_0___default.a.get('http://127.0.0.1:8000/api/posts').then(function (response) {
-        console.log(response.data.results);
-        _this.posts = response.data.results;
+      var postPage = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 1;
+      axios__WEBPACK_IMPORTED_MODULE_0___default.a.get("http://127.0.0.1:8000/api/posts?page=".concat(postPage)).then(function (response) {
+        console.log(response.data.results.data);
+        _this.posts = response.data.results.data; // this.currentPage = response.data.
       })["catch"](function (error) {
         console.error(error);
       });

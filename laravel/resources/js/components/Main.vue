@@ -13,14 +13,18 @@ export default {
     data: function(){
         return{
             posts: [],
+            currentPage: 1,
+            lastPage: null,
+            loading: false
         }
     },
     methods: {
-        getPosts(){
-            axios.get('http://127.0.0.1:8000/api/posts')
+        getPosts(postPage = 1){
+            axios.get(`http://127.0.0.1:8000/api/posts?page=${postPage}`)
             .then((response) => {
-                console.log(response.data.results);
-                this.posts = response.data.results;
+                console.log(response.data.results.data);
+                this.posts = response.data.results.data;
+                // this.currentPage = response.data.
             }).catch((error) => {
                 console.error(error);
             })

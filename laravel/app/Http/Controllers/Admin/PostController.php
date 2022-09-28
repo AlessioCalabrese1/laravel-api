@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Category;
 use App\Http\Controllers\Controller;
 use App\Post;
+use App\Tag;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
@@ -14,6 +15,10 @@ use Illuminate\Validation\Rule;
 
 class PostController extends Controller
 {
+    private $validationRules = [
+        'title' => 'required'
+    ];
+
     /**
      * Display a listing of the resource.
      *
@@ -34,7 +39,8 @@ class PostController extends Controller
     {
         $post = new Post();
         $categories = Category::all();
-        return view('admin.post.create', ['post' => $post, 'categories' => $categories]);
+        $tags = Tag::all();
+        return view('admin.post.create', ['post' => $post, 'categories' => $categories, 'tags' => $tags]);
     }
 
     /**
@@ -45,12 +51,13 @@ class PostController extends Controller
      */
     public function store(Request $request)
     {
-        $sentData = $request->all();
+        $post = new Post();
+        $sentData = $request->validate($this->validationRules);
         $sentData['user_id'] = Auth::id();
         $sentData['date'] = Carbon::now();
         $sentData['img'] = Storage::put('storage', $sentData['img']);
-        $post = new Post();
         $post = $post->create($sentData);
+        $post->tags()->sync($sentData['tags']);
         return redirect()->route('admin.posts.show', $post->id);
     }
 
@@ -76,7 +83,8 @@ class PostController extends Controller
     {
         $post = Post::findOrFail($id);
         $categories = Category::all();
-        return view('admin.post.edit', ['post' => $post, 'categories' => $categories]);
+        $tags = Tag::all();
+        return view('admin.post.edit', ['post' => $post, 'categories' => $categories, 'tags' => $tags]);
     }
 
     /**
@@ -88,8 +96,9 @@ class PostController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $sentData = $request->all();
+        $sentData = $request->validate($this->validationRules);
         $post = Post::findOrFail($id);
+        $post->tags()->sync($sentData['tags']);
         $post = $post->update($sentData);
         return redirect()->route('admin.posts.show', $id);
     }
