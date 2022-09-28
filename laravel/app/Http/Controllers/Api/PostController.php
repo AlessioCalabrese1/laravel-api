@@ -53,7 +53,11 @@ class PostController extends Controller
      */
     public function show($id)
     {
-        //
+        $post = Post::with('tags')->findOrFail($id);
+        return response()->json([
+            'response' => true,
+            'results' => $post,
+        ]);
     }
 
     /**
