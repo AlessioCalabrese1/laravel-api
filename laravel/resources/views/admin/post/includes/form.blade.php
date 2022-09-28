@@ -39,7 +39,7 @@
     <div class="mb-3">
         @forelse ($tags as $tag)
         <div class="form-check">
-            @if ($errors->any)
+            @if ($errors->any())
             <input class="form-check-input" type="checkbox" name="tags[]" id="tags" value="{{ $tag->id }}" 
             {{ in_array($tag->id, old('tags', [])) ? 'checked' : '' }}>
             <label class="form-check-label" for="tag">
